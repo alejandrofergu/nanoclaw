@@ -111,7 +111,13 @@ export function commandExists(name: string): boolean {
     execSync(`command -v ${name}`, { stdio: 'ignore' });
     return true;
   } catch {
-    return false;
+    // Fallback for Windows (cmd.exe doesn't have command -v)
+    try {
+      execSync(`where ${name}`, { stdio: 'ignore', shell: 'cmd.exe' });
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 
