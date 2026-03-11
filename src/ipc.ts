@@ -80,9 +80,14 @@ export function startIpcWatcher(deps: IpcDeps): void {
                   isMain ||
                   (targetGroup && targetGroup.folder === sourceGroup)
                 ) {
-                  await deps.sendMessage(data.chatJid, data.text);
+                  // Route through responseJid if configured — keeps IPC messages
+                  // in the same channel as streaming output (e.g., #outputs instead
+                  // of the triggering #requests channel).
+                  const destJid =
+                    targetGroup?.containerConfig?.responseJid ?? data.chatJid;
+                  await deps.sendMessage(destJid, data.text);
                   logger.info(
-                    { chatJid: data.chatJid, sourceGroup },
+                    { chatJid: data.chatJid, destJid, sourceGroup },
                     'IPC message sent',
                   );
                 } else {

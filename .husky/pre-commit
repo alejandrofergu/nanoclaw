@@ -1,1 +1,4 @@
+#!/bin/sh
+# Source nvm so WSL npm is used (not Windows npm via interop)
+[ -s "$HOME/.nvm/nvm.sh" ] && . "$HOME/.nvm/nvm.sh" --no-use
 npm run format:fix

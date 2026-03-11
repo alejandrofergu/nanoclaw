@@ -108,6 +108,17 @@ function buildVolumeMounts(
         containerPath: '/workspace/global',
         readonly: true,
       });
+      // Ops files are writable -- agents need to update client-status.md,
+      // pipeline.md, etc. when Alex instructs them to.
+      // This more-specific mount shadows the read-only parent at /workspace/global/ops.
+      const globalOpsDir = path.join(globalDir, 'ops');
+      if (fs.existsSync(globalOpsDir)) {
+        mounts.push({
+          hostPath: globalOpsDir,
+          containerPath: '/workspace/global/ops',
+          readonly: false,
+        });
+      }
     }
   }
 
